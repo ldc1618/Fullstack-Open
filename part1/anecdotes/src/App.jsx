@@ -2,6 +2,34 @@ import { useState } from 'react'
 
 const getRandom = (max) => Math.floor(Math.random() * max)
 
+const Anecdote = ({ anecdotes, votes, selected }) => {
+  return (
+    <>
+      <div>
+        {anecdotes[selected]}
+      </div>
+      <div>
+        has {votes[selected]} votes
+      </div>
+    </>
+  )
+}
+
+const MostVotes = ({ anecdotes, votes }) => {
+  let maxVotes = 0
+  let index = 0
+  for (let i = 0; i < votes.length; i++) {
+    if (votes[i] > maxVotes) {
+      maxVotes = votes[i]
+      index = i
+    }
+  }
+
+  return (
+    <Anecdote anecdotes={anecdotes} votes={votes} selected={index} />
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -26,13 +54,15 @@ const App = () => {
   return (
     <>
       <div>
-        {anecdotes[selected]}
+        <h1>Anecdote of the day</h1>
+        <Anecdote anecdotes={anecdotes} votes={votes} selected={selected} />
+        <button onClick={handleVote}>vote</button>
+        <button onClick={() => setSelected(getRandom(anecdotes.length))}>next anecdote</button>
       </div>
       <div>
-        has {votes[selected]} votes
+        <h1>Anecdote with most votes</h1>
+        <MostVotes anecdotes={anecdotes} votes={votes} />
       </div>
-      <button onClick={handleVote}>vote</button>
-      <button onClick={() => setSelected(getRandom(anecdotes.length))}>next anecdote</button>
     </>
   )
 }
