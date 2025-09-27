@@ -66,6 +66,16 @@ const App = () => {
         .then(returnedNumber => {
           setPersons(persons.filter(p => p.id != returnedNumber.id))
         })
+        .catch(error => {
+          setIsError(true)
+          setMessage(
+            `Information of ${person.name} has already been removed from server`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+          setPersons(persons.filter(p => p.id !== person.id))
+        })
     }
   }
 
@@ -86,6 +96,16 @@ const App = () => {
         setTimeout(() => {
           setMessage(null)
         }, 5000)
+      })
+      .catch(error => {
+        setIsError(true)
+        setMessage(
+          `Information of ${person.name} has already been removed from server`
+        )
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+        setPersons(persons.filter(p => p.id !== person.id))
       })
   }
 
