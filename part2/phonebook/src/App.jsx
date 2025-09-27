@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Notification from './components/Notification'
 import numberService from './services/numbers'
 import { SearchBar, AddPerson, People } from './components/Numbers'
 
@@ -7,6 +8,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [nameFilter, setNameFilter] = useState('')
+  const [message, setMessage] = useState(null)
+  const [isError, setIsError] = useState(false)
 
   useEffect(() => {
     numberService
@@ -42,6 +45,14 @@ const App = () => {
           setPersons(persons.concat(returnedNumber))
           setNewName('')
           setNewNumber('')
+
+          setIsError(false)
+          setMessage(
+            `Added ${returnedNumber.name}`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
     }
   }
@@ -67,6 +78,14 @@ const App = () => {
         ))
         setNewName('')
         setNewNumber('')
+
+        setIsError(false)
+        setMessage(
+          `Updated ${returnedNumber.name}`
+        )
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
       })
   }
 
@@ -89,6 +108,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} error={isError} />
       <SearchBar nameFilter={nameFilter} handleNameFilter={handleNameFilter}/>
       <AddPerson 
         newName={newName} 
