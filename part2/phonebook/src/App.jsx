@@ -1,49 +1,6 @@
 import { useState, useEffect } from 'react'
 import numberService from './services/numbers'
-
-const Person = ({ person }) => {
-  return (
-    <li>{person.name} {person.number}</li>
-  )
-}
-
-const SearchBar = ({ nameFilter, handleNameFilter }) => {
-  return (
-    <form>
-      <div>
-        filter shown with <input value={nameFilter} onChange={handleNameFilter}/>
-      </div>
-    </form>
-  )
-}
-
-const AddPerson = ({ newName, newNumber, handleNameChange, handleNumberChange, addName }) => {
-  return (
-    <>
-      <h2>add a new</h2>
-      <form onSubmit={addName}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-    </>
-  )
-}
-
-const People = ({ peopleToShow }) => {
-  return (
-    <>
-      <h2>Numbers</h2>
-      {peopleToShow.map((person) => <Person key={person.id} person={person} />)}
-    </>
-  )
-}
+import { SearchBar, AddPerson, People } from './components/Numbers'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -80,6 +37,18 @@ const App = () => {
     }
   }
 
+  const deleteNumber = (person) => {
+    const proceed = confirm(`Delete ${person.name}`)
+
+    if (proceed) {
+      numberService
+        .remove(person.id)
+        .then(returnedNumber => {
+          setPersons(persons.filter(p => p.id != returnedNumber.id))
+        })
+    }
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -107,7 +76,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
         addName={addName}
       />
-      <People peopleToShow={peopleToShow}/>
+      <People peopleToShow={peopleToShow} deleteNumber={deleteNumber}/>
     </div>
   )
 }
