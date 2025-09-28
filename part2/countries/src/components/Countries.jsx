@@ -1,3 +1,6 @@
+import { useState, useEffect } from 'react'
+import weatherService from '../services/weather'
+
 const Country = ({ country, onShowCountry }) => {
   return (
     <li>
@@ -7,10 +10,21 @@ const Country = ({ country, onShowCountry }) => {
 }
 
 const CountryInfo = ({ country }) => {
+  const [weather, setWeather] = useState(null)
+
+  useEffect(() => {
+    if (country.capital && country.capital.length > 0) {
+      weatherService
+        .getWeather(country.capital[0])
+        .then(data => setWeather(data))
+        .catch(error => console.log("Weather fetch failed: ", error))
+    }
+  }, [country])
+
   return (
     <div>
       <h1>{country.name.common}</h1>
-      <li>Capital {country.capital}</li>
+      <li>Capital {country.capital[0]}</li>
       <li>Area {country.area}</li>
       <h2>Languages</h2>
       <ul>
@@ -23,6 +37,18 @@ const CountryInfo = ({ country }) => {
         })}
       </ul>
       <img src={country.flags.png}/>
+
+      {weather && (
+        <div>
+          <h2>Weather in {country.capital[0]}</h2>
+          <li>Temperature {weather.main.temp} Celsius</li>
+          <img 
+            src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} 
+            alt='weather icon'
+          />
+          <li>Wind {weather.wind.speed} m/s</li>
+        </div>
+      )}
     </div>
   )
 }
