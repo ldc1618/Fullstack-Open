@@ -1,6 +1,8 @@
-const Country = ({ country }) => {
+const Country = ({ country, onShowCountry }) => {
   return (
-    <li>{country.name.common}</li>
+    <li>
+      {country.name.common} <button onClick={() => onShowCountry(country)}>Show</button>
+    </li>
   )
 }
 
@@ -25,8 +27,13 @@ const CountryInfo = ({ country }) => {
   )
 }
 
-const Countries = ({ countries }) => {
-  if (countries.length > 10) {
+const Countries = ({ countries, onShowCountry, selectedCountry }) => {
+  if (selectedCountry) {
+    return (
+      <CountryInfo country={selectedCountry}/>
+    )
+  }
+  else if (countries.length > 10) {
     return (
       <li>Too many matches, specify another filter</li>
     )
@@ -44,7 +51,13 @@ const Countries = ({ countries }) => {
   else {
     return (
       <>
-        {countries.map(c => <Country key={c.name.common} country={c}/>)}
+        {countries.map(c => 
+          <Country 
+            key={c.name.common} 
+            country={c} 
+            onShowCountry={onShowCountry}
+          />
+        )}
       </>
     )
   }

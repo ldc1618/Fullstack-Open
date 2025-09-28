@@ -6,6 +6,7 @@ const App = () => {
   const [newCountry, setNewCountry] = useState('')
   const [countries, setCountries] = useState([])
   const [showCountries, setShowCountries] = useState([])
+  const [selectedCountry, setSelectedCountry] = useState(null)
 
   useEffect(() => {
     countriesService
@@ -16,9 +17,14 @@ const App = () => {
       })
   }, [])
 
+  const submitCountry = (event) => {
+    event.preventDefault()
+  }
+
   const handleNewCountryChange = (event) => {
     const name = event.target.value
     setNewCountry(name)
+    setSelectedCountry(null)
     if (name === '') {
       setShowCountries(countries)
     }
@@ -31,10 +37,14 @@ const App = () => {
 
   return (
     <div>
-      <form>
+      <form onSubmit={submitCountry}>
         find countries <input value={newCountry} onChange={handleNewCountryChange}/>
       </form>
-      <Countries countries={showCountries}/>
+      <Countries 
+        countries={showCountries}
+        onShowCountry={setSelectedCountry}
+        selectedCountry={selectedCountry}
+      />
     </div>
   )
 }
