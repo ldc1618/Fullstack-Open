@@ -26,10 +26,18 @@ let numbers = [
   }
 ]
 
+const getNextId = () => {
+  // const maxId = numbers.length > 0
+  //   ? Math.max(...numbers.map(n => Number(n.id)))
+  //   : 0
+  // return String(maxId + 1)
+  return Math.floor(Math.random() * Number.MAX_VALUE);
+}
+
 app.get('/info', (request, response) => {
   const numPeople = numbers.length
   const now = new Date()
-  
+
   response.send(`
     <div>
       <p>Phonebook has info for ${numPeople} people</p>
@@ -58,6 +66,30 @@ app.delete('/api/persons/:id', (request, response) => {
   numbers = numbers.filter(number => number.id !== id)
 
   response.status(204).end()
+})
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: "Name or number missing"
+    })
+  } else if (numbers.find(n => n.name === body.name)) {
+    return response.status(400).json({
+      error: "name must be unique"
+    })
+  }
+
+  const number = {
+    "name": body.name,
+    "number": body.number,
+    "id": getNextId()
+  }
+
+  numbers = numbers.concat(number)
+
+  response.json(numbers)
 })
 
 const PORT = 3001
