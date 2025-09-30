@@ -29,6 +29,7 @@ let numbers = [
 app.get('/info', (request, response) => {
   const numPeople = numbers.length
   const now = new Date()
+  
   response.send(`
     <div>
       <p>Phonebook has info for ${numPeople} people</p>
@@ -50,6 +51,13 @@ app.get('/api/persons/:id', (request, response) => {
   } else {
     response.status(404).end()
   }
+})
+
+app.delete('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  numbers = numbers.filter(number => number.id !== id)
+
+  response.status(204).end()
 })
 
 const PORT = 3001
